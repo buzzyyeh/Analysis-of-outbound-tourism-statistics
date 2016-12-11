@@ -1,0 +1,25 @@
+---
+title: "Analysis of outbound tourism statistics"
+author: "Group 13"
+date: "2016年12月11日"
+output: 
+  html_document :
+    fig_height: 7
+    fig_width: 9
+    keep_md: yes
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+
+```
+
+# Final Project
+
+內文.....略
+
+
+```{r cars}
+
+```
