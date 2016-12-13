@@ -12,7 +12,18 @@ output:
 ---
 
 ```{r setup, include=FALSE}
+data_path <- "~/R/dsR/final_data/"
+require(dplyr)
+require(ggplot2)
 
+City <- read.csv(paste0(data_path,"City.csv"),encoding = "utf-8")
+ExchangeRate <- read.csv(paste0(data_path,"ExchangeRate.csv"),encoding = "utf-8")
+ExchangeRate_annually <- read.csv(paste0(data_path,"ExchangeRate_annually.csv"),encoding = "utf-8")
+Taiwan_abroad_population_annually <- read.csv(paste0(data_path,"Taiwan_abroad_population_annually.csv"),encoding = "utf-8")
+Taiwan_GDPetc_data_annually <- read.csv(paste0(data_path,"Taiwan_GDPetc_data_annually.csv"),encoding = "utf-8")
+Taiwan_GDPetc_data_season <- read.csv(paste0(data_path,"Taiwan_GDPetc_data_season.csv"),encoding = "utf-8")
+Team13 <- mutate(Taiwan_abroad_population_annually,JPY.USD = ExchangeRate_annually$JPY.USD[-23])
+Team13 <- mutate(Team13,Taiwan_GDP = Taiwan_GDPetc_data_annually$GDP_millionNTD[4:25])
 ```
 
 # Final Project
@@ -20,6 +31,37 @@ output:
 內文.....略
 
 
-```{r cars}
+```{r}
+tbl_df(Team13)
+
+```
+
+#分布關係
+
+```{r}
+#日本出國旅遊人數跟日圓匯率分布關係
+ggplot(Team13,aes(x = Japan,y= JPY.USD)) + geom_point(stat = "identity")
+
+#總出國旅遊人數跟日圓匯率分布關係
+ggplot(Team13,aes(x = Totals,y= JPY.USD)) + geom_point(stat = "identity")
+
+#日本出國旅遊人數跟台灣GDP分布關係
+ggplot(Team13,aes(x = Japan,y= Taiwan_GDP)) + geom_point(stat = "identity")
+
+#總出國旅遊人數跟台灣GDP分布關係
+ggplot(Team13,aes(x = Totals,y= Taiwan_GDP)) + geom_point(stat = "identity")
+
+#年份-(日本/總出國人數)
+ggplot(Team13,aes(x = Years,y = Japan/Totals)) + geom_point(stat = "identity")
+```
+
+#假設
+
+```{r}
+
+#從2011年開始去日本比率高升
+#假設一：2011年開始出現多往日本的廉航班機
+#假設二：日本開始發展觀光產業
+
 
 ```
