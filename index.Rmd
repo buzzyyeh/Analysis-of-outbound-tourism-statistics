@@ -28,17 +28,19 @@ Team13 <- mutate(Team13,Taiwan_GDP = Taiwan_GDPetc_data_annually$GDP_millionNTD[
 
 # Final Project
 
-# 資料呈現：
+內文.....略
+
 
 ```{r}
 tbl_df(Team13)
+
 ```
 
-# 分布關係
+#分布關係
 
 ```{r}
-
-ggplot(Team13,aes(x = Japan,y= JPY.USD)) + geom_point(stat = "identity") + ggtitle("日本出國旅遊人數跟日圓匯率分布") + xlab("日本人數") + ylab("日圓匯率")
+#日本出國旅遊人數跟日圓匯率分布關係
+ggplot(Team13,aes(x = Japan,y= JPY.USD)) + geom_point(stat = "identity")
 
 #總出國旅遊人數跟日圓匯率分布關係
 ggplot(Team13,aes(x = Totals,y= JPY.USD)) + geom_point(stat = "identity")
