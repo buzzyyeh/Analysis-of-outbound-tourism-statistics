@@ -20,8 +20,35 @@ Taiwan_Japan_Monthly <- read.csv(paste0(data_path,"Taiwan_Japan_Monthly.csv"),en
 typhoon_landing2 <- read.csv(paste0(data_path,"typhoon_landing2.csv"),encoding = "utf-8")
 #============================================================================
 
-Team13 <- mutate(Taiwan_abroad_population_annually,JPY.USD = ExchangeRate_annually$JPY.USD[-23])
-Team13 <- mutate(Team13,Taiwan_GDP = Taiwan_GDPetc_data_annually$GDP_millionNTD[4:25])
+Team13 <- data.frame(Date = earthquake$date[97:273])
+Team13 <- mutate(Team13,Tokyo = City_monthly$東京[13:189],Osaka = City_monthly$大阪[13:189])
+p <- c()
+for(i in c(1:14)){
+  for(j in c(2:13)){
+    p <- c(p,Taiwan_Japan_Monthly[i,j])
+  }
+}
+p <- c(p,Taiwan_Japan_Monthly[15,2:10])
+Team13 <- mutate(Team13,Taiwan2Japan = p)
+Team13 <- mutate(Team13,NTD2JPY = ExchangeRate$NTD.USD[97:273]/ExchangeRate$JPY.USD[97:273])
+p <- c()
+for(i in c(45:103)){
+  for(j in c(1:3)){
+    p <- c(p,Taiwan_GDPetc_data_season$GDP_millionNTD[i]/3)
+  }
+}
+Team13 <- mutate(Team13,TaiwanGDP = p)
+p <- c()
+for(i in c(45:103)){
+  for(j in c(1:3)){
+    p <- c(p,Taiwan_GDPetc_data_season$population[i])
+  }
+}
+Team13 <- mutate(Team13,TaiwanPopulation = p)
+Team13 <- mutate(Team13,NaturalDisaster = scourge$day[97:273])
+Team13 <- mutate(Team13,Taiwan2Others = City_monthly$日本以外[13:189])
+
+#=======================================================
 #日本出國旅遊人數跟日圓匯率分布關係
 ggplot(Team13,aes(x = Japan,y= JPY.USD)) + geom_point(stat = "identity")
 
@@ -40,10 +67,10 @@ ggplot(Team13,aes(x = Years,y = Japan/Totals)) + geom_point(stat = "identity")
 #假設一：2011年開始出現多往日本的廉航班機
 #假設二：日本開始發展觀光產業
 
-City <- mutate(City,Japan_only = City$總計 - City$日本以外)
+City <- mutate(City,Japan_only = City$total - City$others)
 
-r <- Team13$Japan[7:22] / City$Japan_only[-17]
-Clean_City <- as.data.frame(t(t(City[-17,2:13]) * r))
+r <- Team13$Japan[7:22] / City$Japan_only
+Clean_City <- as.data.frame(t(t(City[,2:13]) * r))
 
 Clean_City <- mutate(Clean_City,Years = City$航線別與飛行班次[-17])
 ggplot(Clean_City,aes(x = Clean_City$Years,y=Clean_City$東京)) +  geom_bar(stat = "identity")
@@ -104,3 +131,8 @@ ExchangeRate_annually <- mutate(ExchangeRate_annually,NTDJPY=ExchangeRate_annual
 #畫出匯率&訪日人數關係
 data.frame(NTDJPY = ExchangeRate_annually$NTDJPY[-23],Japan = Taiwan_abroad_population_annually$Japan)%>%
 ggplot(aes(Japan,NTDJPY)) + geom_line(stat="identity") + geom_point()
+
+twoPredictorModel <- lm(formula =unlist(Taiwan2Janpan)~TaiwanGDP+NTD2JPY,data = Team13)
+summary(twoPredictorModel)
+twoPredictorModel2 <- lm(formula =unlist(Taiwan2Janpan)~TaiwanGDP,data = Team13)
+plot(twoPredictorModel2)
